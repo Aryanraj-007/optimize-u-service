@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator db_seed {
+  provider = "ts-node"
+  output   = "./prisma/seed.ts"
+}
+
+model Course {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  title       String
+  subtitle    String?
+  priceCents  Int       @default(9900)
+  tags        String[]  @default([])
+  level       String    @default("Intermediate")
+  description String
+  chunks      CourseChunk[]
+  embedding   Json?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  enrollments Enrollment[]
+}
+
+model CourseChunk {
+  id        String   @id @default(cuid())
+  courseId  String
+  content   String
+  embedding Json?
+  Course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
+
+model Enrollment {
+  id        String   @id @default(cuid())
+  email     String
+  courseId  String
+  Course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
