@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 
-const demoCourses = {
+const demoCourses: any = {
   "executive-presence": {
     title: "Executive Presence & Influence",
     description:
